@@ -530,7 +530,8 @@
       'gpt-plus': 8,
       'gemini': 5,
       'claude': 7,
-      'canva': 30
+      'canva': 30,
+      'capcut': 2
     };
     const MAX_BARRA = 30; // referência para a barrinha
     document.querySelectorAll('.produto').forEach(function (card) {
@@ -550,6 +551,19 @@
         box.innerHTML = '<p class="p-estoque-txt"><span class="red-dot"></span>' + txt + '</p><div class="p-barra"><i style="width:' + pct + '%"></i></div>';
       }
       box.hidden = false;
+    });
+
+    // Evento de Lead no Meta Pixel a cada clique em "Comprar pelo WhatsApp"
+    document.querySelectorAll('.p-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const card = btn.closest('.produto');
+        const nome = card.querySelector('.p-nome').textContent.trim();
+        const val = card.querySelector('.p-val');
+        const valor = val ? parseFloat(val.textContent.replace('.', '').replace(',', '.')) : 0;
+        if (typeof fbq === 'function') {
+          fbq('track', 'Lead', { content_name: nome, content_category: 'Plano', value: valor, currency: 'BRL' });
+        }
+      });
     });
   </script>
 </body>
